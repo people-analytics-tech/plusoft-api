@@ -10,18 +10,18 @@ class BaseRequests:
     """Aux class to communicate with mindsight api"""
 
     def __init__(self, username: str, password: str):
-        self.__username = username
-        self.__password = password
+        self.username = username
+        self.password = password
         self.headers = None
         self.base_path = "https://linxacademy-hml.edusense.app/api"
 
     @property
-    def authorization(self) -> bytes:
-        return base64.b64encode(f"{self.__username}:{self.__password}".encode("utf-8")).decode("ascii")
+    def basic_authorization_token(self) -> bytes:
+        return base64.b64encode(f"{self.username}:{self.password}".encode("utf-8")).decode("ascii")
 
     def __default_header(self) -> dict:
         return {
-            "Authorization": f"Basic {self.authorization}", 
+            "Authorization": f"Basic {self.basic_authorization_token}", 
             "Content-Type": "application/json; charset=utf-8",
         }
 

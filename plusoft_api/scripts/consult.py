@@ -7,17 +7,17 @@ class Consult(ApiEndpoint):
 
     def __init__(
             self,
-            username: str = config("PLUSOFT_USERNAME"),
-            password: str = config("PLUSOFT_PASSWORD")
+            username: str = config("PLUSOFT_USERNAME", default=None),
+            password: str = config("PLUSOFT_PASSWORD", default=None)
         ) -> None:
         super().__init__(username, password, "/import/consult")
     
     def consult_status(self, consult_code: int) -> dict:
-        params = {
+        payload = {
             "code": consult_code
         }
 
-        return self.base_requests.post(path=self.endpoint_path, parameters=params)
+        return self.base_requests.post(path=self.endpoint_path, json=payload)
 
 
 class RequisitionStatus:
@@ -38,9 +38,10 @@ class FutureProcessing:
     def __init__(
             self,
             message: str,
-            consult_code: int,
-            username: str = config("PLUSOFT_USERNAME"),
-            password: str = config("PLUSOFT_PASSWORD"),
+            consult_code: int = None,
+            error: bool = None,
+            username: str = config("PLUSOFT_USERNAME", default=None),
+            password: str = config("PLUSOFT_PASSWORD", default=None),
         ) -> None:
         self.message: str = message
         self.consult_code: int = consult_code
