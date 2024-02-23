@@ -11,6 +11,7 @@ class GroupsOptions(int, Enum):
       REMOVE_GROUPS = 3
       REMOVE_ALL_GROUPS = 4
 
+yes_no_type = Literal["sim", "nao"]
 
 class Users(ApiEndpoint):
     
@@ -37,9 +38,9 @@ class Users(ApiEndpoint):
             position_manager: str = None,
             photo: dict = None,
             language: dict = None,
-            active: Literal["sim", "nao"] = None,
+            active: yes_no_type = None,
             cover: dict = None,
-            terms: Literal["sim", "nao"] = None,
+            terms: yes_no_type = None,
             groups: list[str] = None,
             groups_option: GroupsOptions = None,
             new_login: str = None
@@ -73,7 +74,8 @@ class Users(ApiEndpoint):
                    password=self.base_requests.__password,
                    **self.base_requests.post(path=self.endpoint_path, json=payload)
             )
-    def historic_user_access(
+            
+    def historic_user_access( 
                   self,
                   login: str,
                   login_data: str,
@@ -83,6 +85,7 @@ class Users(ApiEndpoint):
                   browser_version: str = None,
                   logout_data: str = None                  
     ) -> FutureProcessing:
+           self.endpoint_path = "/import/users/access"
            payload = [
                   {
                          "login": login,
@@ -102,29 +105,30 @@ class Users(ApiEndpoint):
     def insert_users_group(
                   self,
                   group_title: str,
-                  edit_name: Literal["sim", "não"] = None,
-                  edit_nickname: Literal["sim", "não"] = None,
-                  edit_email: Literal["sim", "não"] = None,
-                  change_password: Literal["sim", "não"] = None,
-                  select_avatar: Literal["sim", "não"] = None,
-                  select_cover: Literal["sim", "não"] = None,
-                  upload_photo: Literal["sim", "não"] = None,
-                  uplaad_cover: Literal["sim", "não"] = None,
+                  edit_name: yes_no_type = None,
+                  edit_nickname: yes_no_type = None,
+                  edit_email: yes_no_type = None,
+                  change_password: yes_no_type = None,
+                  select_avatar: yes_no_type = None,
+                  select_cover: yes_no_type = None,
+                  upload_photo: yes_no_type = None,
+                  uplaad_cover: yes_no_type = None,
                   default_cover_url: str = None,
                   default_avatar_url: str = None,
-                  block_chat: Literal["sim", "não"] = None,
-                  all_chat_users: Literal["sim", "não"] = None,
-                  chat_group: Literal["sim", "não"] = None,
-                  chat_supervisor: Literal["sim", "não"] = None,
-                  chat_admin: Literal["sim", "não"] = None,
-                  custom_layout: Literal["sim", "não"] = None,
+                  block_chat: yes_no_type = None,
+                  all_chat_users: yes_no_type = None,
+                  chat_group: yes_no_type = None,
+                  chat_supervisor: yes_no_type = None,
+                  chat_admin: yes_no_type = None,
+                  custom_layout: yes_no_type = None,
                   dark_logo_url: str = None,
                   light_logo_url: str = None,
                   primary_color_dark: str = None,
                   primary_color_light: str = None,
                   main_page: dict = None,
-                  enable_notification_email: Literal["sim", "não"] = None,
+                  enable_notification_email: yes_no_type = None,
     ) -> FutureProcessing:
+           self.endpoint_path = "/import/users/groups"
            payload = [
                   {
                          "titulo_grupo": group_title,
@@ -161,9 +165,10 @@ class Users(ApiEndpoint):
     def insert_users_avatars(
                   self,
                   avatar_title: str,
-                  published: Literal["sim", "não"],
+                  published: yes_no_type,
                   url_avatar_image: str
     ) -> FutureProcessing:
+           self.endpoint_path = "/import/users/avatares"
            payload = [
                   {
                         "titulo_avatar": avatar_title,
@@ -180,9 +185,10 @@ class Users(ApiEndpoint):
     def insert_users_covers(
                   self,
                   cover_title: str,
-                  published: Literal["sim", "não"],
+                  published: yes_no_type,
                   url_cover_image: str
     ) -> FutureProcessing:
+           self.endpoint_path = "/import/users/capas"
            payload = [
                   {
                         "titulo_capa": cover_title,
