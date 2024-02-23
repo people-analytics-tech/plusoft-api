@@ -14,14 +14,18 @@ class GroupsOptions(int, Enum):
 yes_no_type = Literal["sim", "nao"]
 
 class Users(ApiEndpoint):
-    
+
     def __init__(
             self,
-            username: str = config("PLUSOFT_USERNAME"),
-            password: str = config("PLUSOFT_PASSWORD")
+            username: str = config("PLUSOFT_USERNAME", default=None),
+            password: str = config("PLUSOFT_PASSWORD", default=None)
         ):
-            super().__init__(username=username, password=password, endpoint_path="/import/user")
-    
+            super().__init__(username=username, password=password, endpoint_path="/import/users")
+
+    def consult_user(self, login: str) -> dict:
+        payload = {"login": login}
+        return self.base_requests.post(path="/import/consult/user", json=payload)
+
     def insert_user(
             self,
             login: str,
@@ -70,11 +74,11 @@ class Users(ApiEndpoint):
                 }
             ]
             return FutureProcessing(
-                   username=self.base_requests.__username,
-                   password=self.base_requests.__password,
+                   username=self.base_requests.username,
+                   password=self.base_requests.password,
                    **self.base_requests.post(path=self.endpoint_path, json=payload)
             )
-            
+          
     def historic_user_access( 
                   self,
                   login: str,
@@ -201,4 +205,3 @@ class Users(ApiEndpoint):
                   password=self.base_requests.__password,
                   **self.base_requests.post(path=self.endpoint_path, json=payload)
            )
-    
