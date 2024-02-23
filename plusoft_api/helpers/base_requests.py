@@ -10,8 +10,8 @@ class BaseRequests:
     """Aux class to communicate with mindsight api"""
 
     def __init__(self, username: str, password: str):
-        self.__username = "PLUSOFT_USERNAME"
-        self.__password = "PLUSOFT_PASSWORD"
+        self.__username = username
+        self.__password = password
         self.headers = None
         self.base_path = "https://linxacademy-hml.edusense.app/api"
 
