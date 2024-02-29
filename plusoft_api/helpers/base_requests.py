@@ -1,27 +1,31 @@
 """This module provide a base to use requests for api"""
 
-from typing import Any, Literal
 import base64
+from typing import Any, Literal
+
 import requests
+
 from plusoft_api.utils.aux_functions import remove_none_fields
 
 
 class BaseRequests:
     """Aux class to communicate with mindsight api"""
 
-    def __init__(self, username: str, password: str):
+    def __init__(self, username: str, password: str, domain: str):
         self.username = username
         self.password = password
         self.headers = None
-        self.base_path = "https://linxacademy-hml.edusense.app/api"
+        self.base_path = f"https://{domain}.edusense.app/api"
 
     @property
     def basic_authorization_token(self) -> bytes:
-        return base64.b64encode(f"{self.username}:{self.password}".encode("utf-8")).decode("ascii")
+        return base64.b64encode(
+            f"{self.username}:{self.password}".encode("utf-8")
+        ).decode("ascii")
 
     def __default_header(self) -> dict:
         return {
-            "Authorization": f"Basic {self.basic_authorization_token}", 
+            "Authorization": f"Basic {self.basic_authorization_token}",
             "Content-Type": "application/json; charset=utf-8",
         }
 
@@ -98,7 +102,7 @@ class BaseRequests:
         path: str,
         headers: dict = None,
         parameters: dict = None,
-        json: dict = None
+        json: dict = None,
     ) -> Any:
         """Use GET method on Rest API"""
         return self.__request_helper(

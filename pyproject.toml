@@ -2,12 +2,20 @@
 name = "plusoft-api"
 version = "0.1.0"
 description = ""
-authors = ["Diogo56 <diogo.amorim2001@gmail.com>"]
+authors = ["stone_people_analytics <systems-techpeople@stone.com.br>"]
 readme = "README.md"
 packages = [{include = "plusoft_api"}]
+maintainers = [
+    "Diogo56 <diogo.amorim2001@gmail.com>"
+]
+license = "MIT"
+repository = "https://github.com/people-analytics-tech/plusoft-api"
+
 
 [tool.poetry.dependencies]
 python = "^3.9"
+python-decouple = "^3.8"
+requests = "^2.31.0"
 
 
 [build-system]
