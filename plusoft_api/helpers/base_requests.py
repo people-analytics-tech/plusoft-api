@@ -5,29 +5,36 @@ from typing import Any, Literal
 
 import requests
 
-from plusoft_api.utils.aux_functions import remove_none_fields
+
+class BasicAuth:
+    def __init__(self, username: str, password: str) -> None:
+        self.username = username
+        self.password = password
+
+    @property
+    def basic_authorization_token(self) -> str:
+        return base64.b64encode(
+            f"{self.username}:{self.password}".encode("utf-8")
+        ).decode("ascii")
+
+    @property
+    def authorization_header(self) -> dict:
+        return {"Authorization": f"Basic {self.basic_authorization_token}"}
 
 
 class BaseRequests:
     """Aux class to communicate with mindsight api"""
 
-    def __init__(self, username: str, password: str, domain: str):
-        self.username = username
-        self.password = password
+    def __init__(self, domain: str, basic_auth: BasicAuth, endpoint_path: str = "/"):
+        self.basic_auth = basic_auth
         self.headers = None
         self.base_path = f"https://{domain}.edusense.app/api"
-
-    @property
-    def basic_authorization_token(self) -> bytes:
-        return base64.b64encode(
-            f"{self.username}:{self.password}".encode("utf-8")
-        ).decode("ascii")
+        self.endpoint = endpoint_path
 
     def __default_header(self) -> dict:
-        return {
-            "Authorization": f"Basic {self.basic_authorization_token}",
-            "Content-Type": "application/json; charset=utf-8",
-        }
+        header = self.basic_auth.authorization_header
+        header["Content-Type"] = "application/json; charset=utf-8"
+        return header
 
     def __request_helper(
         self,
@@ -41,7 +48,7 @@ class BaseRequests:
         if not headers:
             headers = {}
 
-        request_url = f"{self.base_path}{path}"
+        request_url = f"{self.base_path}{self.endpoint}{path}"
         self.headers = {**self.__default_header(), **headers}
 
         response = None
@@ -159,8 +166,8 @@ class BaseRequests:
             method="patch",
             headers=headers,
             parameters=parameters,
-            data=remove_none_fields(data) if data else None,
-            json=remove_none_fields(json) if json else None,
+            data=data if data else None,
+            json=json if json else None,
         )
 
     def delete(

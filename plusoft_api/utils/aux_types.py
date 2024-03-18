@@ -2,9 +2,6 @@
 
 
 from enum import Enum
-from typing import Literal
-
-YesNo = Literal["sim", "nao"]
 
 
 class GroupsOptions(int, Enum):
@@ -12,3 +9,8 @@ class GroupsOptions(int, Enum):
     FULL_UPDATE = 2
     REMOVE_GROUPS = 3
     REMOVE_ALL_GROUPS = 4
+
+
+class YesNoEnum(int, Enum):
+    yes = 1
+    no = 0

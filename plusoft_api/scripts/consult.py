@@ -1,49 +1,32 @@
-from typing import Literal
-
-from decouple import config
-
-from plusoft_api.helpers.api_endpoint import ApiEndpoint
+from plusoft_api.helpers.api_endpoint import BasicAuth, ConsultEndpoint
+from plusoft_api.models.consult import RequisitionStatus
 
 
-class Consult(ApiEndpoint):
-    def __init__(
-        self,
-        username: str = config("PLUSOFT_USERNAME", default=None),
-        password: str = config("PLUSOFT_PASSWORD", default=None),
-    ) -> None:
-        super().__init__(username, password, "/import/consult")
+class Consult(ConsultEndpoint):
+    def __init__(self, basic_auth: BasicAuth, domain: str) -> None:
+        super().__init__(domain=domain, basic_auth=basic_auth)
 
     def consult_status(self, consult_code: int) -> dict:
         payload = {"code": consult_code}
 
-        return self.base_requests.post(path=self.endpoint_path, json=payload)
+        return self.base_requests.post(path="", json=payload)
 
 
-class RequisitionStatus:
-    def __init__(self, status: Literal["P", "R", "S"], message: str) -> None:
-        self.status = (status,)
-        self.message = message
-
-    @property
-    def to_dict(self) -> dict:
-        return {"status": self.status, "message": self.message}
-
-
-class FutureProcessing:
+class RequisitionProccess:
     def __init__(
         self,
+        basic_auth: BasicAuth,
+        domain: str,
         message: str,
         consult_code: int = None,
         error: bool = None,
-        username: str = config("PLUSOFT_USERNAME", default=None),
-        password: str = config("PLUSOFT_PASSWORD", default=None),
     ) -> None:
         if error:
             raise ValueError(message)
 
         self.message: str = message
         self.consult_code: int = consult_code
-        self.consult_client: Consult = Consult(username=username, password=password)
+        self.consult_client: Consult = Consult(basic_auth=basic_auth, domain=domain)
 
     @property
     def requisition_status(self) -> RequisitionStatus:

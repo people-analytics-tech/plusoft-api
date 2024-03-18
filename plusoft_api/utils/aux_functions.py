@@ -1,22 +1,27 @@
 # This module contains auxiliary functions to use in library
 
 
-def remove_none_fields(data: dict) -> dict:
-    """Remove keys with none values from dictionary
+def clean_none_values_dict(data: dict) -> dict:
+    """Remove none fields from dictionary."""
 
-    Args:
-        data (dict, mandatory): Dictionary with data to filter
-
-    return: dictionary with filtred data
-    """
-    result = {}
+    result: dict = {}
     for key, value in data.items():
-        if value is not None:
-            if isinstance(
-                value, dict
-            ):  # If value is dict, use recursive call to iterate all data
-                result[key] = remove_none_fields(data=value)
+        if value != None:
+            if isinstance(value, dict):
+                result[key] = clean_none_values_dict(value)
 
-            result[key] = value
+            elif isinstance(value, list):
+                if len(value) > 0:
+                    if isinstance(value[0], dict):
+                        result[key] = [clean_none_values_dict(item) for item in value]
+
+                    else:
+                        result[key] = value
+
+                else:
+                    result[key] = value
+
+            else:
+                result[key] = value
 
     return result

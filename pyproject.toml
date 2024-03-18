@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "plusoft-api"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = ["stone_people_analytics <systems-techpeople@stone.com.br>"]
 readme = "README.md"
@@ -14,7 +14,6 @@ repository = "https://github.com/people-analytics-tech/plusoft-api"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-python-decouple = "^3.8"
 requests = "^2.31.0"
 
 
