@@ -43,8 +43,35 @@ class InsertUsersFactory(BaseImportsPayload):
         groups: list[str] = None,
         groups_option: GroupsOptions = None,
         new_login: str = None,
+        extra_fields: dict = None,
     ) -> "InsertUsersFactory":
-        payload = {
+        """Add user to staged payload before upload.
+
+        Parameters:
+            login (str, Mandatory): User login. This is the primary key of user.
+            name (str, Mandatory): Name of user.
+            email (str, Mandatory): Email of user.
+            password (str, Optional): Password of user.
+            nickname (str, Optional): Nickname of user.
+            biography (str, Optional): Biography of user.
+            telephone (str, Optional): Telephone number of user.
+            team (str, Optional): Team name of user.
+            position (str, Optional): Position name of user.
+            login_manager (str, Optional): Login of manager. Same defined in manager user record.
+            name_manager (str, Optional): Name of manager.
+            position_manager (str, Optional): Position of manager.
+            photo (FileMetadata, Optional): Photo file. Import the FileMetadata object to send in this field.
+            language (Language, Optional): Language to user. Import the Language object to send in this field.
+            active (Literal["sim", "nao"], Optional): This define if the user is active on the system.
+            cover (FileMetadata, Optional): Cover image. Import the FileMetadata object to send in this field.
+            terms (Literal["sim", "nao"], Optional): Terms accepted.
+            groups (list[str], , Optional): Groups of user. Use the group primary key to send in this list.
+            groups_option (GroupsOptions, Optional): Action to execute with groups list. Send 1 to only add the groups to user, 2 to overwrite user groups, 3 to remove groups of user, 4 to remove all groups of user.
+            new_login (str, Optional): New login information to update in system.
+
+        Kwargs: All of extra parameters will sended in payload. Use this to include your custom fields.
+        """
+        defult_payload = {
             "login": login,
             "nome": name,
             "senha": password,
@@ -66,7 +93,9 @@ class InsertUsersFactory(BaseImportsPayload):
             "grupos_opcao": groups_option,
             "novo_login": new_login,
         }
-        self._payload.add_to_payload(**payload)
+        super().add_to_payload(
+            **defult_payload, custom_fields=extra_fields, primary_key="login"
+        )
         return self
 
 
