@@ -43,7 +43,7 @@ class BasePayload:
         return RequisitionProccess(
             basic_auth=self.endpoint._basic_auth,
             domain=self.endpoint.domain,
-            **self.endpoint.base_requests.post(path=path, json=self.payload(load_type))
+            **self.endpoint.base_requests.post(path=path, json=self.payload(load_type)),
         )
 
 
@@ -55,10 +55,22 @@ class BaseImportsPayload:
         self._payload: BasePayload = BasePayload(
             payload_factory=payload_factory, endpoint=endpoint
         )
+        self.__keys: list[str] = []
 
-    def add_to_payload(self):
+    def add_to_payload(self, primary_key: str = None, **kwargs):
         """Override in subclass"""
-        pass
+        if primary_key:
+            if kwargs[primary_key] not in self.__keys:
+                self._payload.add_to_payload(**kwargs)
+                self.__keys.append(kwargs[primary_key])
+
+            else:
+                raise ValueError(
+                    f"Record not added to payload because {primary_key} {kwargs[primary_key]} already exist into staged payload."
+                )
+
+        else:
+            self._payload.add_to_payload(**kwargs)
 
     def upload(
         self, load_type: Literal["full", "without_none_fields"] = "without_none_fields"

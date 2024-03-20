@@ -1,4 +1,7 @@
-from typing import Literal
+from datetime import date
+from typing import Literal, Union
+
+from typing_extensions import override
 
 from plusoft_api.models.aux import PayloadDataClass, dataclass
 from plusoft_api.utils.aux_types import GroupsOptions, YesNoEnum
@@ -40,6 +43,33 @@ class UserModel(PayloadDataClass):
     grupos: list[str] = None
     grupos_opcao: GroupsOptions = None
     novo_login: str = None
+    custom_fields: dict = None
+
+    def __formated_custom_fields(self) -> Union[dict, None]:
+        formated = {}
+        if self.custom_fields:
+            for key, value in self.custom_fields.items():
+                if isinstance(value, date):
+                    formated[key] = value.strftime("%Y-%m-%d")
+
+                else:
+                    formated[key] = value
+
+            return formated
+
+        else:
+            return None
+
+    @override
+    @property
+    def as_dict(self) -> dict:
+        payload = super().as_dict
+        payload.pop("custom_fields")
+        custom_fields = self.__formated_custom_fields()
+        if not custom_fields:
+            custom_fields = {}
+
+        return dict(**payload, **custom_fields)
 
 
 class UserAccessHistoricModel(PayloadDataClass):
