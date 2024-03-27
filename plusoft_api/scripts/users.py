@@ -44,6 +44,7 @@ class InsertUsersFactory(BaseImportsPayload):
         groups_option: GroupsOptions = None,
         new_login: str = None,
         extra_fields: dict = None,
+        primary_key: str = "login",
     ) -> "InsertUsersFactory":
         """Add user to staged payload before upload.
 
@@ -68,8 +69,8 @@ class InsertUsersFactory(BaseImportsPayload):
             groups (list[str], , Optional): Groups of user. Use the group primary key to send in this list.
             groups_option (GroupsOptions, Optional): Action to execute with groups list. Send 1 to only add the groups to user, 2 to overwrite user groups, 3 to remove groups of user, 4 to remove all groups of user.
             new_login (str, Optional): New login information to update in system.
-
-        Kwargs: All of extra parameters will sended in payload. Use this to include your custom fields.
+            extra_fields (dict, Optional): Extra fields values to send in requisition. Format: {"extra_field_name": "value"}
+            primary_key (str, Optional): If you want to verify if a user already exist in staged payload, use this parameter to pass what the field you want to verify. Default = "login"
         """
         defult_payload = {
             "login": login,
@@ -94,7 +95,7 @@ class InsertUsersFactory(BaseImportsPayload):
             "novo_login": new_login,
         }
         super().add_to_payload(
-            **defult_payload, custom_fields=extra_fields, primary_key="login"
+            **defult_payload, custom_fields=extra_fields, primary_key=primary_key
         )
         return self
 
